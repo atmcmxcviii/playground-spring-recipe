@@ -4,16 +4,19 @@ import hu.atsoft.playground.springrecipe.domain.*;
 import hu.atsoft.playground.springrecipe.repositories.CategoryRepository;
 import hu.atsoft.playground.springrecipe.repositories.RecipeRepository;
 import hu.atsoft.playground.springrecipe.repositories.UnitOfMeasureRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
+import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Component
 public class RecipeBootstrap implements ApplicationListener<ContextRefreshedEvent> {
 
@@ -31,10 +34,10 @@ public class RecipeBootstrap implements ApplicationListener<ContextRefreshedEven
     }
 
     @Override
+    @Transactional
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
-        System.out.println("Loading " + getRecipes().size() + " recipies");
         recipeRepository.saveAll(getRecipes());
-        System.out.println("Done");
+        log.debug("Loading Bootstrap data");
     }
 
     private List<Recipe> getRecipes() {
